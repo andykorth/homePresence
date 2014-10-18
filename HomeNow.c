@@ -96,6 +96,8 @@ void setup()
 	
 	// Setup the RFID reader.
 	SetupNFC();
+	
+	currentFunction = PleaseSwipeTag;
 }
 
 
@@ -186,20 +188,37 @@ static int PollNFC(void){
 
 int currentNote = -1;
 bool toggled = true;
+int delayUntil = 0;
+void (* currentFunction)(void);
+
 // This routine loops forever
 void loop()
 {
+	if(millis() < delayUntil){
+		return;
+	}else{
+		currentFunction();
+	}
+}
+
+void PleaseSwipeTag(void){
+	Welcome("Please Swipe Your Tag");
+	currentFunction = CheckNFC;
+}
+
+void CheckNFC(void){
 	Debug("Polling");
 	
 	int user_index = PollNFC();
 	if(user_index != -1){
 		Welcome(Users[user_index].name);
 		TogglePersonState(user_index);
-		delay(4000);
-		Welcome("Please Swipe Your Tag");
+		delayUntil = millis() + 4000;
+		currentFunction = PleaseSwipeTag;
 	} else {
 		Debug("---No One---");
 	}
+	
 }
 
 int ledControl(String command)
@@ -210,14 +229,11 @@ int ledControl(String command)
 	//Sanity check to see if the pin numbers are within limits
 	if (pinNumber < 0 || pinNumber > 1) return -1;
 	
-	
 	if(pinNumber == 0){
 		Welcome("Red LED");
 	}else{
 		Welcome("Green LED");
 	}
-	
-	
 	
 	// find out the state of the led
 	if(command.substring(3,7) == "HIGH") state = 1;
