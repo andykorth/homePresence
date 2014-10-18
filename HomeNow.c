@@ -129,23 +129,23 @@ void loop()
 	if(	digitalRead(TEMP_BUTTON) == HIGH && toggled){
 		jorge = !jorge;
 		toggled = false;
-	    
-	    if(jorge){
-	        Welcome("JORGE AWAY");
-	    }else{
-	        Welcome("JORGE HOME");
-	    }
+		
+		if(jorge){
+			Welcome("JORGE AWAY");
+		}else{
+			Welcome("JORGE HOME");
+		}
 	}else{
-	    toggled = true;
+		toggled = true;
 	}
 	
 	/*
-	if(currentNote != -1){
-	    
-	    char* str = "note: x";
-	    str[6] = currentNote;
-	    Welcome(str);
-	    
+	 if(currentNote != -1){
+	 
+	 char* str = "note: x";
+	 str[6] = currentNote;
+	 Welcome(str);
+	 
 		// to calculate the note duration, take one second
 		// divided by the note type.
 		//e.g. quarter note = 1000 / 4, eighth note = 1000/8, etc.
@@ -160,10 +160,10 @@ void loop()
 		noTone(D7);
 		currentNote = (currentNote+1);
 		if(currentNote > 8){
-			currentNote = -1;
+	 currentNote = -1;
 		}
-	}
-	*/
+	 }
+	 */
 	
 	// Nothing to do here
 }
@@ -194,7 +194,7 @@ int ledControl(String command)
 		Welcome("Green LED");
 	}
 	
-
+	
 	
 	// find out the state of the led
 	if(command.substring(3,7) == "HIGH") state = 1;
