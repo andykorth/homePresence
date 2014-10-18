@@ -15,6 +15,8 @@
 #define LED_2 D1
 int count = 0;
 
+int people = 0;
+
 Adafruit_SSD1306 display(OLED_MOSI, OLED_CLK, OLED_DC, OLED_RESET, OLED_CS);
 
 #if (SSD1306_LCDHEIGHT != 64)
@@ -82,12 +84,7 @@ void setup()
 	digitalWrite(LED_2, LOW);
 	
 	//Setting up automatically synced variables with spark backend
-	Spark.variable("count",						&count, INT);
-	// 	Spark.variable("CaptainF",	&Users[0].state, INT);
-	// 	Spark.variable("Jorge",						&Users[1].state, INT);
-	// 	Spark.variable("TheStickler",			&Users[2].state, INT);
-	// 	Spark.variable("Cardla",					&Users[3].state, INT);
-	// 	Spark.variable("BabyBertha",			&Users[4].state, INT);
+	Spark.variable("People", &people, INT);
 	
 	// setup display:
 	Serial.begin(9600);
@@ -149,11 +146,12 @@ void TogglePersonState(int personIndex)
 	{
 		Goodbye("Bad person.");
 	}else{
-		Users[personIndex].state = !Users[personIndex].state;
-		if(Users[personIndex].state){
+		people = people ^ (1 << personIndex);
+		
+		if( people & (1 << personIndex )) {
 			Welcome(Users[personIndex].name);
 		}else{
-			Welcome(Users[personIndex].name);
+			Goodbye(Users[personIndex].name);
 		}
 	}
 }
@@ -194,7 +192,7 @@ void loop()
 	if(user_index != -1){
 		Welcome(Users[user_index].name);
 		TogglePersonState(user_index);
-		delay(2000);
+		//delay(2000);
 	} else {
 		Debug("---Noone---");
 	}
