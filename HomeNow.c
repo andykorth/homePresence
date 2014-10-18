@@ -9,6 +9,8 @@
 #define OLED_CS    5
 #define OLED_RESET 6
 
+#define TEMP_BUTTON A0
+
 // name the pins
 #define LED_1 D0
 #define LED_2 D1
@@ -21,6 +23,10 @@ Adafruit_SSD1306 display(OLED_MOSI, OLED_CLK, OLED_DC, OLED_RESET, OLED_CS);
 #endif
 
 #define TEXT_WIDTH 21
+
+// State of our users:
+int jorge = 0;
+
 
 // This routine runs only once upon reset
 void setup()
@@ -37,6 +43,12 @@ void setup()
 	digitalWrite(LED_1, LOW);
 	digitalWrite(LED_2, LOW);
 	Spark.variable("count", &count, INT);
+
+
+	Spark.variable("Jorge", &jorge, INT);
+
+	
+	pinMode(TEMP_BUTTON, INPUT);
 	
 	// setup display:
 	Serial.begin(9600);
@@ -72,6 +84,11 @@ static void Welcome(char *name){
 // This routine loops forever
 void loop()
 {
+	if(	digitalRead(TEMP_BUTTON) == HIGH){
+		jorge = !jorge;
+		
+	}
+	
 	// Nothing to do here
 }
 
