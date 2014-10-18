@@ -23,9 +23,10 @@ Adafruit_SSD1306 display(OLED_MOSI, OLED_CLK, OLED_DC, OLED_RESET, OLED_CS);
 #endif
 
 #define TEXT_WIDTH 21
+#definte PERSON_COUNT 5
 
 // State of our users:
-int jorge = 0;
+int[PERSON_COUNT] peopleStatus;
 
 // notes in the melody:
 int melody[] = {
@@ -48,13 +49,19 @@ void setup()
 	pinMode(LED_2, OUTPUT);
 	pinMode(D7, OUTPUT);
 	
+	pinMode(TEMP_BUTTON, INPUT);
+	
 	// Initialize both the LEDs to be OFF
 	digitalWrite(LED_1, LOW);
 	digitalWrite(LED_2, LOW);
-	Spark.variable("count", &count, INT);
-	Spark.variable("Jorge", &jorge, INT);
 	
-	pinMode(TEMP_BUTTON, INPUT);
+	//Setting up automatically synced variables with spark backend
+	Spark.variable("count",						&count, INT);
+	Spark.variable("CaptainFaceman",	&peopleStatus[0], INT);
+	Spark.variable("Jorge",						&peopleStatus[1], INT);
+	Spark.variable("TheStickler",			&peopleStatus[2], INT);
+	Spark.variable("Cardla",					&peopleStatus[3], INT);
+	Spark.variable("BabyBertha",			&peopleStatus[4], INT);
 	
 	// setup display:
 	Serial.begin(9600);
@@ -64,7 +71,6 @@ void setup()
 	// init done
 	
 	Welcome("Captain Faceman");
-	
 	
 }
 
@@ -85,6 +91,31 @@ static void Welcome(char *name){
 	display.display();
 }
 
+static void Goodbye(char *name){
+	display.clearDisplay();
+	
+	display.setTextSize(1);
+	display.setTextColor(RED);
+	
+	display.setCursor(25, 25);
+	display.println("Goodbye Friend!");
+	
+	int width = 6*strlen(name) - 1;
+	display.setCursor(64 - width/2, 33);
+	display.println(name);
+	
+	display.display();
+}
+
+void TogglePersonState(int personIndex)
+{
+	if(personIndex < 0 || personIndex > PERSON_COUNT)
+	{
+		Goodbye("Bad person.");
+	}else{
+		peopleStatus[personIndex] = !peopleStatus[personIndex];
+	}
+}
 
 int currentNote = -1;
 bool toggled = true;
