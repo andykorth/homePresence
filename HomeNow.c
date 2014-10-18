@@ -120,24 +120,60 @@ static void Welcome(char *name){
 }
 
 
+// Returns the user's index or -1 if no user.
+static int PollNFC(void){
+  uint8_t uid[] = { 0, 0, 0, 0, 0, 0, 0 };  // Buffer to store the returned UID
+  uint8_t uidLength;                        // Length of the UID (4 or 7 bytes depending on ISO14443A card type)
+
+  if(!nfc.readPassiveTargetID(PN532_MIFARE_ISO14443A, uid, &uidLength)){
+    Welcome("Read Error.");
+    delay(2000);
+    return -1;
+  }
+  
+  if(uidLength != UID_LENGTH){
+    Welcome("Bad UID.");
+    delay(2000);
+    return -1;
+  }
+
+  int count = sizeof(Users)/sizeof(*Users);
+  for(int i=0; i<count; i++){
+    if(memcmp(uid, Users[i].uid, UID_LENGTH) == 0){
+      return i;
+    }
+  }
+  
+  return -1;
+}
+
 int currentNote = -1;
 bool toggled = true;
 // This routine loops forever
 void loop()
 {
-	
-	if(	digitalRead(TEMP_BUTTON) == HIGH && toggled){
-		jorge = !jorge;
-		toggled = false;
+    Welcome("Polling");
+    
+    int user_index = PollNFC();
+    if(user_index != -1){
+        Welcome(Users[user_index].name);
+        delay(2000);
+    } else {
+        Welcome("---Noone---");
+    }
+
+// 	if(	digitalRead(TEMP_BUTTON) == HIGH && toggled){
+// 		jorge = !jorge;
+// 		toggled = false;
 		
-		if(jorge){
-			Welcome("JORGE AWAY");
-		}else{
-			Welcome("JORGE HOME");
-		}
-	}else{
-		toggled = true;
-	}
+// 		if(jorge){
+// 			Welcome("JORGE AWAY");
+// 		}else{
+// 			Welcome("JORGE HOME");
+// 		}
+// 	}else{
+// 		toggled = true;
+// 	}
 	
 	/*
 	 if(currentNote != -1){
