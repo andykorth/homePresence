@@ -22,6 +22,8 @@ Adafruit_SSD1306 display(OLED_MOSI, OLED_CLK, OLED_DC, OLED_RESET, OLED_CS);
 #error("Height incorrect, please fix Adafruit_SSD1306.h!");
 #endif
 
+#definte PERSON_COUNT 5
+
 #define NFC_SCK  (A2)
 #define NFC_MOSI (A3)
 #define NFC_SS   (A4)
@@ -49,18 +51,16 @@ struct User {
 //  uint8_t uid[4];
   char *name;
   uint8_t uid[UID_LENGTH];
+	int state;
 };
 
-struct User Users[5] = {
-  {"Captain Faceman", {0x27, 0xBD, 0x77, 0x79}},
-  {"Jorge", {0x24, 0xB1, 0x41, 0xF4}},
-  {"The Stickler", {0x97, 0x2C, 0x11, 0xCB}},
-  {"Cardla", {0xC3, 0x71, 0x26, 0xD0}},
-  {"Baby Bertha", {0x47, 0x91, 0x33, 0x21}},
+struct User Users[PERSON_COUNT] = {
+  {"Captain Faceman", {0x27, 0xBD, 0x77, 0x79}, 0},
+  {"Jorge", {0x24, 0xB1, 0x41, 0xF4}, 0},
+  {"The Stickler", {0x97, 0x2C, 0x11, 0xCB}, 0},
+  {"Cardla", {0xC3, 0x71, 0x26, 0xD0}, 0},
+  {"Baby Bertha", {0x47, 0x91, 0x33, 0x21}, 0},
 };
-
-// State of our users:
-int jorge = 0;
 
 // notes in the melody:
 int melody[] = {
@@ -83,13 +83,19 @@ void setup()
 	pinMode(LED_2, OUTPUT);
 	pinMode(D7, OUTPUT);
 	
+	pinMode(TEMP_BUTTON, INPUT);
+	
 	// Initialize both the LEDs to be OFF
 	digitalWrite(LED_1, LOW);
 	digitalWrite(LED_2, LOW);
-	Spark.variable("count", &count, INT);
-	Spark.variable("Jorge", &jorge, INT);
 	
-	pinMode(TEMP_BUTTON, INPUT);
+	//Setting up automatically synced variables with spark backend
+	Spark.variable("count",						&count, INT);
+	Spark.variable("CaptainFaceman",	&Users[0].state, INT);
+	Spark.variable("Jorge",						&Users[1].state, INT);
+	Spark.variable("TheStickler",			&Users[2].state, INT);
+	Spark.variable("Cardla",					&Users[3].state, INT);
+	Spark.variable("BabyBertha",			&Users[4].state, INT);
 	
 	// setup display:
 	Serial.begin(9600);
@@ -119,6 +125,31 @@ static void Welcome(char *name){
 	display.display();
 }
 
+static void Goodbye(char *name){
+	display.clearDisplay();
+	
+	display.setTextSize(1);
+	display.setTextColor(RED);
+	
+	display.setCursor(25, 25);
+	display.println("Goodbye Friend!");
+	
+	int width = 6*strlen(name) - 1;
+	display.setCursor(64 - width/2, 33);
+	display.println(name);
+	
+	display.display();
+}
+
+void TogglePersonState(int personIndex)
+{
+	if(personIndex < 0 || personIndex > PERSON_COUNT)
+	{
+		Goodbye("Bad person.");
+	}else{
+		Users[personIndex].state = !Users[personIndex].state;
+	}
+}
 
 // Returns the user's index or -1 if no user.
 static int PollNFC(void){
