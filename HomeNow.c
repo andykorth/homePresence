@@ -32,34 +32,34 @@ Adafruit_SSD1306 display(OLED_MOSI, OLED_CLK, OLED_DC, OLED_RESET, OLED_CS);
 Adafruit_PN532 nfc(NFC_SCK, NFC_MISO, NFC_MOSI, NFC_SS);
 
 static void SetupNFC(void){
-  nfc.begin();
-
-  uint32_t versiondata = nfc.getFirmwareVersion();
-  if (! versiondata) {
-    Welcome("No NFC.");
-    while (1); // halt
-  }
-
-  // configure board to read RFID tags
-  nfc.SAMConfig();
-  
-  Welcome("NFC");
+	nfc.begin();
+	
+	uint32_t versiondata = nfc.getFirmwareVersion();
+	if (! versiondata) {
+		Welcome("No NFC.");
+		while (1); // halt
+	}
+	
+	// configure board to read RFID tags
+	nfc.SAMConfig();
+	
+	Welcome("NFC");
 }
 
 #define UID_LENGTH 4
 struct User {
-//  uint8_t uid[4];
-  char *name;
-  uint8_t uid[UID_LENGTH];
+	//  uint8_t uid[4];
+	char *name;
+	uint8_t uid[UID_LENGTH];
 	int state;
 };
 
 struct User Users[PERSON_COUNT] = {
-  {"Captain Faceman", {0x27, 0xBD, 0x77, 0x79}, 0},
-  {"Jorge", {0x24, 0xB1, 0x41, 0xF4}, 0},
-  {"The Stickler", {0x97, 0x2C, 0x11, 0xCB}, 0},
-  {"Cardla", {0xC3, 0x71, 0x26, 0xD0}, 0},
-  {"Baby Bertha", {0x47, 0x91, 0x33, 0x21}, 0},
+	{"Captain Faceman", {0x27, 0xBD, 0x77, 0x79}, 0},
+	{"Jorge", {0x24, 0xB1, 0x41, 0xF4}, 0},
+	{"The Stickler", {0x97, 0x2C, 0x11, 0xCB}, 0},
+	{"Cardla", {0xC3, 0x71, 0x26, 0xD0}, 0},
+	{"Baby Bertha", {0x47, 0x91, 0x33, 0x21}, 0},
 };
 
 // notes in the melody:
@@ -91,7 +91,7 @@ void setup()
 	
 	//Setting up automatically synced variables with spark backend
 	Spark.variable("count",						&count, INT);
-	Spark.variable("CaptainFaceman",	&Users[0].state, INT);
+	Spark.variable("CaptainF",	&Users[0].state, INT);
 	Spark.variable("Jorge",						&Users[1].state, INT);
 	Spark.variable("TheStickler",			&Users[2].state, INT);
 	Spark.variable("Cardla",					&Users[3].state, INT);
@@ -105,7 +105,7 @@ void setup()
 	// init done
 	
 	// Setup the RFID reader.
-//	SetupNFC();
+	//	SetupNFC();
 }
 
 
@@ -163,27 +163,27 @@ void TogglePersonState(int personIndex)
 
 // Returns the user's index or -1 if no user.
 static int PollNFC(void){
-  uint8_t uid[] = { 0, 0, 0, 0, 0, 0, 0 };  // Buffer to store the returned UID
-  uint8_t uidLength;                        // Length of the UID (4 or 7 bytes depending on ISO14443A card type)
-
-  if(!nfc.readPassiveTargetID(PN532_MIFARE_ISO14443A, uid, &uidLength)){
-    Debug("Read Error.");
-    return -1;
-  }
-  
-  if(uidLength != UID_LENGTH){
-    Debug("Bad UID.");
-    return -1;
-  }
-
-  int count = sizeof(Users)/sizeof(*Users);
-  for(int i=0; i<count; i++){
-    if(memcmp(uid, Users[i].uid, UID_LENGTH) == 0){
-      return i;
-    }
-  }
-  
-  return -1;
+	uint8_t uid[] = { 0, 0, 0, 0, 0, 0, 0 };  // Buffer to store the returned UID
+	uint8_t uidLength;                        // Length of the UID (4 or 7 bytes depending on ISO14443A card type)
+	
+	if(!nfc.readPassiveTargetID(PN532_MIFARE_ISO14443A, uid, &uidLength)){
+		Debug("Read Error.");
+		return -1;
+	}
+	
+	if(uidLength != UID_LENGTH){
+		Debug("Bad UID.");
+		return -1;
+	}
+	
+	int count = sizeof(Users)/sizeof(*Users);
+	for(int i=0; i<count; i++){
+		if(memcmp(uid, Users[i].uid, UID_LENGTH) == 0){
+			return i;
+		}
+	}
+	
+	return -1;
 }
 
 int currentNote = -1;
@@ -191,29 +191,29 @@ bool toggled = true;
 // This routine loops forever
 void loop()
 {
-//    Debug("Polling");
-    
-    int user_index = -1;//PollNFC();
-    if(user_index != -1){
-        Welcome(Users[user_index].name);
-        TogglePersonState(user_index);
-        delay(2000);
-    } else {
-//        Debug("---Noone---");
-    }
-
-// 	if(	digitalRead(TEMP_BUTTON) == HIGH && toggled){
-// 		jorge = !jorge;
-// 		toggled = false;
-		
-// 		if(jorge){
-// 			Welcome("JORGE AWAY");
-// 		}else{
-// 			Welcome("JORGE HOME");
-// 		}
-// 	}else{
-// 		toggled = true;
-// 	}
+	//    Debug("Polling");
+	
+	int user_index = -1;//PollNFC();
+	if(user_index != -1){
+		Welcome(Users[user_index].name);
+		TogglePersonState(user_index);
+		delay(2000);
+	} else {
+		//        Debug("---Noone---");
+	}
+	
+	// 	if(	digitalRead(TEMP_BUTTON) == HIGH && toggled){
+	// 		jorge = !jorge;
+	// 		toggled = false;
+	
+	// 		if(jorge){
+	// 			Welcome("JORGE AWAY");
+	// 		}else{
+	// 			Welcome("JORGE HOME");
+	// 		}
+	// 	}else{
+	// 		toggled = true;
+	// 	}
 	
 	/*
 	 if(currentNote != -1){
