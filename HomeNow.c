@@ -10,6 +10,8 @@
 
 #define TEMP_BUTTON A0
 
+#define DEBUG
+
 // name the pins
 #define LED_1 D0
 #define LED_2 D1
@@ -70,7 +72,6 @@ void setup()
 {
 	//Register our Spark function here
 	Spark.function("led", ledControl);
-	Spark.function("resetCounter", resetCounterFunc);
 	
 	// Configure the pins to be outputs
 	pinMode(LED_1, OUTPUT);
@@ -115,6 +116,7 @@ static void Welcome(char *name){
 }
 
 static void Debug(char *message){
+#ifdef DEBUG
 	display.setTextSize(1);
 	display.setTextColor(WHITE, BLACK);
 	
@@ -122,6 +124,7 @@ static void Debug(char *message){
 	display.print(message);
 	
 	display.display();
+#endif
 }
 
 static void Goodbye(char *name){
@@ -192,37 +195,12 @@ void loop()
 	if(user_index != -1){
 		Welcome(Users[user_index].name);
 		TogglePersonState(user_index);
-		//delay(2000);
+		delay(4000);
+		Welcome("Please Swipe Your Tag");
 	} else {
-		Debug("---Noone---");
+		Debug("---No One---");
 	}
-	
-	// 	if(	digitalRead(TEMP_BUTTON) == HIGH && toggled){
-	// 		jorge = !jorge;
-	// 		toggled = false;
-	
-	// 		if(jorge){
-	// 			Welcome("JORGE AWAY");
-	// 		}else{
-	// 			Welcome("JORGE HOME");
-	// 		}
-	// 	}else{
-	// 		toggled = true;
-	// 	}
-	
-	// Nothing to do here
 }
-
-
-int resetCounterFunc(String command)
-{
-	count = 0;
-	currentNote = 0;
-	Welcome("Reset Button");
-	
-	return 1;
-}
-
 
 int ledControl(String command)
 {
