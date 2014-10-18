@@ -1,0 +1,11 @@
+curl https://api.spark.io/v1/devices/53ff6e066667574848470967/led -d access_token=01c5f7b2d98633a65068351fd2a830c083c144cc -d params=l1,LOW
+curl https://api.spark.io/v1/devices/53ff6e066667574848470967/led -d access_token=01c5f7b2d98633a65068351fd2a830c083c144cc -d params=l1,HIGH
+curl https://api.spark.io/v1/devices/53ff6e066667574848470967/led -d access_token=01c5f7b2d98633a65068351fd2a830c083c144cc -d params=l2,LOW
+curl https://api.spark.io/v1/devices/53ff6e066667574848470967/led -d access_token=01c5f7b2d98633a65068351fd2a830c083c144cc -d params=l2,HIGH
+
+curl -G https://api.spark.io/v1/devices/53ff6e066667574848470967/count -d access_token=01c5f7b2d98633a65068351fd2a830c083c144cc
+
+
+
+
+
