@@ -67,6 +67,11 @@ struct User Users[PERSON_COUNT] = {
 	{"Baby Bertha", {0x47, 0x91, 0x33, 0x21}, 0},
 };
 
+int currentNote = -1;
+bool toggled = true;
+int delayUntil = 0;
+void (* currentFunction)(void);
+
 // This routine runs only once upon reset
 void setup()
 {
@@ -185,11 +190,6 @@ static int PollNFC(void){
 	
 	return -1;
 }
-
-int currentNote = -1;
-bool toggled = true;
-int delayUntil = 0;
-void (* currentFunction)(void);
 
 // This routine loops forever
 void loop()
