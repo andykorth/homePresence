@@ -64,11 +64,23 @@
     }
     
     function updateStateChanges() {
-        requestURL = "https://api.spark.io/v1/devices/" + deviceID + "/" + getFunc + "/?access_token=" + accessToken;
+        requestURL = "https://api.spark.io/v1/devices/" + deviceID + "/count/?access_token=" + accessToken;
         $.getJSON(requestURL, function(json) {
             document.getElementById("stateChanges").innerHTML = json.result;
             document.getElementById("stateChanges").style.fontSize = "28px";
         });
+
+        requestURL = "https://api.spark.io/v1/devices/" + deviceID + "/Jorge/?access_token=" + accessToken;
+        $.getJSON(requestURL, function(json) {
+            if(json.result==0){
+                document.getElementById("Jorge").bgColor = "green";
+                document.getElementById("Jorge").innerHTML = "Home";
+            }else{
+                document.getElementById("Jorge").bgColor = "red";
+                document.getElementById("Jorge").innerHTML = "Away";
+            }
+        });
+
     }
     
     function sparkSetLedState(ledNumber, state) {
