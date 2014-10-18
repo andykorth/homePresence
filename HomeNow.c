@@ -177,16 +177,23 @@ static void Welcome(char *name){
 }
 
 
-int debounce = true;
 int currentNote = -1;
+bool toggled = true;
 // This routine loops forever
 void loop()
 {
-	if(	digitalRead(TEMP_BUTTON) == HIGH && debounce){
-		debounce = false;
+	
+	if(	digitalRead(TEMP_BUTTON) == HIGH && toggled){
 		jorge = !jorge;
+		toggled = false;
+		
+		if(jorge){
+			Welcome("YES JORGE");
+		}else{
+			Welcome("BAD JORGE");
+		}
 	}else{
-		debounce = true;
+		toggled = true;
 	}
 	
 	/*
