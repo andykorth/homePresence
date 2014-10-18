@@ -1,6 +1,6 @@
-// This #include statement was automatically added by the Spark IDE.
 #include "Adafruit_SSD1306/Adafruit_SSD1306.h"
-#import "notes.h"
+#include "Adafruit_PN532.h"
+#include "notes.h"
 
 // If using software SPI (the default case):
 #define OLED_MOSI   2
@@ -22,8 +22,44 @@ Adafruit_SSD1306 display(OLED_MOSI, OLED_CLK, OLED_DC, OLED_RESET, OLED_CS);
 #error("Height incorrect, please fix Adafruit_SSD1306.h!");
 #endif
 
-#define TEXT_WIDTH 21
 #definte PERSON_COUNT 5
+
+#define NFC_SCK  (A2)
+#define NFC_MOSI (A3)
+#define NFC_SS   (A4)
+#define NFC_MISO (A5)
+
+Adafruit_PN532 nfc(NFC_SCK, NFC_MISO, NFC_MOSI, NFC_SS);
+
+static void SetupNFC(void){
+  nfc.begin();
+
+  uint32_t versiondata = nfc.getFirmwareVersion();
+  if (! versiondata) {
+    Welcome("No NFC.");
+    while (1); // halt
+  }
+
+  // configure board to read RFID tags
+  nfc.SAMConfig();
+  
+  Welcome("NFC");
+}
+
+#define UID_LENGTH 4
+struct User {
+//  uint8_t uid[4];
+  char *name;
+  uint8_t uid[UID_LENGTH];
+};
+
+struct User Users[5] = {
+  {"Captain Faceman", {0x27, 0xBD, 0x77, 0x79}},
+  {"Jorge", {0x24, 0xB1, 0x41, 0xF4}},
+  {"The Stickler", {0x97, 0x2C, 0x11, 0xCB}},
+  {"Cardla", {0xC3, 0x71, 0x26, 0xD0}},
+  {"Baby Bertha", {0x47, 0x91, 0x33, 0x21}},
+};
 
 // State of our users:
 int[PERSON_COUNT] peopleStatus;
@@ -70,8 +106,8 @@ void setup()
 	display.begin(SSD1306_SWITCHCAPVCC);
 	// init done
 	
-	Welcome("Captain Faceman");
-	
+	// Setup the RFID reader.
+	SetupNFC();
 }
 
 
