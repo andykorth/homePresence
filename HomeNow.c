@@ -1,6 +1,5 @@
 #include "Adafruit_SSD1306/Adafruit_SSD1306.h"
 #include "Adafruit_PN532.h"
-#include "notes.h"
 
 // If using software SPI (the default case):
 #define OLED_MOSI   2
@@ -29,6 +28,7 @@ Adafruit_SSD1306 display(OLED_MOSI, OLED_CLK, OLED_DC, OLED_RESET, OLED_CS);
 #define NFC_SS   (A4)
 #define NFC_MISO (A5)
 
+
 Adafruit_PN532 nfc(NFC_SCK, NFC_MISO, NFC_MOSI, NFC_SS);
 
 static void SetupNFC(void){
@@ -46,6 +46,7 @@ static void SetupNFC(void){
 	Welcome("NFC");
 }
 
+
 #define UID_LENGTH 4
 struct User {
 	//  uint8_t uid[4];
@@ -61,15 +62,6 @@ struct User Users[PERSON_COUNT] = {
 	{"Cardla", {0xC3, 0x71, 0x26, 0xD0}, 0},
 	{"Baby Bertha", {0x47, 0x91, 0x33, 0x21}, 0},
 };
-
-// notes in the melody:
-int melody[] = {
-	NOTE_C4, NOTE_G3,NOTE_G3, NOTE_A3, NOTE_G3,0, NOTE_B3, NOTE_C4};
-
-// note durations: 4 = quarter note, 8 = eighth note, etc.:
-int noteDurations[] = {
-	4, 8, 8, 4,4,4,4,4 };
-
 
 // This routine runs only once upon reset
 void setup()
@@ -91,11 +83,11 @@ void setup()
 	
 	//Setting up automatically synced variables with spark backend
 	Spark.variable("count",						&count, INT);
-	Spark.variable("CaptainF",	&Users[0].state, INT);
-	Spark.variable("Jorge",						&Users[1].state, INT);
-	Spark.variable("TheStickler",			&Users[2].state, INT);
-	Spark.variable("Cardla",					&Users[3].state, INT);
-	Spark.variable("BabyBertha",			&Users[4].state, INT);
+	// 	Spark.variable("CaptainF",	&Users[0].state, INT);
+	// 	Spark.variable("Jorge",						&Users[1].state, INT);
+	// 	Spark.variable("TheStickler",			&Users[2].state, INT);
+	// 	Spark.variable("Cardla",					&Users[3].state, INT);
+	// 	Spark.variable("BabyBertha",			&Users[4].state, INT);
 	
 	// setup display:
 	Serial.begin(9600);
@@ -105,7 +97,7 @@ void setup()
 	// init done
 	
 	// Setup the RFID reader.
-	//	SetupNFC();
+	SetupNFC();
 }
 
 
@@ -158,6 +150,11 @@ void TogglePersonState(int personIndex)
 		Goodbye("Bad person.");
 	}else{
 		Users[personIndex].state = !Users[personIndex].state;
+		if(Users[personIndex].state){
+			Welcome(Users[personIndex].name);
+		}else{
+			Welcome(Users[personIndex].name);
+		}
 	}
 }
 
@@ -191,15 +188,15 @@ bool toggled = true;
 // This routine loops forever
 void loop()
 {
-	//    Debug("Polling");
+	Debug("Polling");
 	
-	int user_index = -1;//PollNFC();
+	int user_index = PollNFC();
 	if(user_index != -1){
 		Welcome(Users[user_index].name);
 		TogglePersonState(user_index);
 		delay(2000);
 	} else {
-		//        Debug("---Noone---");
+		Debug("---Noone---");
 	}
 	
 	// 	if(	digitalRead(TEMP_BUTTON) == HIGH && toggled){
@@ -214,32 +211,6 @@ void loop()
 	// 	}else{
 	// 		toggled = true;
 	// 	}
-	
-	/*
-	 if(currentNote != -1){
-	 
-	 char* str = "note: x";
-	 str[6] = currentNote;
-	 Welcome(str);
-	 
-		// to calculate the note duration, take one second
-		// divided by the note type.
-		//e.g. quarter note = 1000 / 4, eighth note = 1000/8, etc.
-		int noteDuration = 1000/noteDurations[currentNote];
-		tone(D7, melody[currentNote],noteDuration);
-		
-		// to distinguish the notes, set a minimum time between them.
-		// the note's duration + 30% seems to work well:
-		int pauseBetweenNotes = noteDuration * 1.30;
-		delay(pauseBetweenNotes);
-		// stop the tone playing:
-		noTone(D7);
-		currentNote = (currentNote+1);
-		if(currentNote > 8){
-	 currentNote = -1;
-		}
-	 }
-	 */
 	
 	// Nothing to do here
 }
