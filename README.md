@@ -3,7 +3,7 @@ Home Presence Monitor
 Developed for the IoT Hack Day.
 
 Is there a presence  in your home?
-![Haunted House](http://static.hauntworld.com/users/10233/hauntprofile/bafcf721/main_3595fca5-b038-4f8f-ab73a5ae3ef5e023.jpg)
+![Haunted House](http://files.slembcke.net/temp/haunted.jpg)
 
 [http://iothackday.mn/](http://iothackday.mn/)
 
