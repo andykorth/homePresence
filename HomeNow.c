@@ -22,7 +22,7 @@ Adafruit_SSD1306 display(OLED_MOSI, OLED_CLK, OLED_DC, OLED_RESET, OLED_CS);
 #error("Height incorrect, please fix Adafruit_SSD1306.h!");
 #endif
 
-#definte PERSON_COUNT 5
+#define PERSON_COUNT 5
 
 #define NFC_SCK  (A2)
 #define NFC_MOSI (A3)
@@ -105,7 +105,7 @@ void setup()
 	// init done
 	
 	// Setup the RFID reader.
-	SetupNFC();
+//	SetupNFC();
 }
 
 
@@ -125,11 +125,21 @@ static void Welcome(char *name){
 	display.display();
 }
 
+static void Debug(char *message){
+	display.setTextSize(1);
+	display.setTextColor(WHITE, BLACK);
+	
+	display.setCursor(0, 56);
+	display.print(message);
+	
+	display.display();
+}
+
 static void Goodbye(char *name){
 	display.clearDisplay();
 	
 	display.setTextSize(1);
-	display.setTextColor(RED);
+	display.setTextColor(WHITE);
 	
 	display.setCursor(25, 25);
 	display.println("Goodbye Friend!");
@@ -157,14 +167,12 @@ static int PollNFC(void){
   uint8_t uidLength;                        // Length of the UID (4 or 7 bytes depending on ISO14443A card type)
 
   if(!nfc.readPassiveTargetID(PN532_MIFARE_ISO14443A, uid, &uidLength)){
-    Welcome("Read Error.");
-    delay(2000);
+    Debug("Read Error.");
     return -1;
   }
   
   if(uidLength != UID_LENGTH){
-    Welcome("Bad UID.");
-    delay(2000);
+    Debug("Bad UID.");
     return -1;
   }
 
@@ -183,14 +191,15 @@ bool toggled = true;
 // This routine loops forever
 void loop()
 {
-    Welcome("Polling");
+//    Debug("Polling");
     
-    int user_index = PollNFC();
+    int user_index = -1;//PollNFC();
     if(user_index != -1){
         Welcome(Users[user_index].name);
+        TogglePersonState(user_index);
         delay(2000);
     } else {
-        Welcome("---Noone---");
+//        Debug("---Noone---");
     }
 
 // 	if(	digitalRead(TEMP_BUTTON) == HIGH && toggled){
