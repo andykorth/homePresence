@@ -70,6 +70,16 @@
             document.getElementById("stateChanges").style.fontSize = "28px";
         });
 
+        requestURL = "https://api.spark.io/v1/devices/" + deviceID + "/CaptainFaceman/?access_token=" + accessToken;
+        $.getJSON(requestURL, function(json) {
+            if(json.result==0){
+                document.getElementById("CaptainFaceman").bgColor = "green";
+                document.getElementById("CaptainFaceman").innerHTML = "Home";
+            }else{
+                document.getElementById("CaptainFaceman").bgColor = "red";
+                document.getElementById("CaptainFaceman").innerHTML = "Away";
+            }
+        });
         requestURL = "https://api.spark.io/v1/devices/" + deviceID + "/Jorge/?access_token=" + accessToken;
         $.getJSON(requestURL, function(json) {
             if(json.result==0){
@@ -78,6 +88,36 @@
             }else{
                 document.getElementById("Jorge").bgColor = "red";
                 document.getElementById("Jorge").innerHTML = "Away";
+            }
+        });
+        requestURL = "https://api.spark.io/v1/devices/" + deviceID + "/TheStickler/?access_token=" + accessToken;
+        $.getJSON(requestURL, function(json) {
+            if(json.result==0){
+                document.getElementById("TheStickler").bgColor = "green";
+                document.getElementById("TheStickler").innerHTML = "Home";
+            }else{
+                document.getElementById("TheStickler").bgColor = "red";
+                document.getElementById("TheStickler").innerHTML = "Away";
+            }
+        });
+        requestURL = "https://api.spark.io/v1/devices/" + deviceID + "/Cardla/?access_token=" + accessToken;
+        $.getJSON(requestURL, function(json) {
+            if(json.result==0){
+                document.getElementById("Cardla").bgColor = "green";
+                document.getElementById("Cardla").innerHTML = "Home";
+            }else{
+                document.getElementById("Cardla").bgColor = "red";
+                document.getElementById("Cardla").innerHTML = "Away";
+            }
+        });
+        requestURL = "https://api.spark.io/v1/devices/" + deviceID + "/BabyBertha/?access_token=" + accessToken;
+        $.getJSON(requestURL, function(json) {
+            if(json.result==0){
+                document.getElementById("BabyBertha").bgColor = "green";
+                document.getElementById("BabyBertha").innerHTML = "Home";
+            }else{
+                document.getElementById("BabyBertha").bgColor = "red";
+                document.getElementById("BabyBertha").innerHTML = "Away";
             }
         });
 
