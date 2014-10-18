@@ -73,11 +73,11 @@
         requestURL = "https://api.spark.io/v1/devices/" + deviceID + "/CaptainFaceman/?access_token=" + accessToken;
         $.getJSON(requestURL, function(json) {
             if(json.result==0){
-                document.getElementById("CaptainFaceman").bgColor = "green";
-                document.getElementById("CaptainFaceman").innerHTML = "Home";
+                document.getElementById("CaptainF").bgColor = "green";
+                document.getElementById("CaptainF").innerHTML = "Home";
             }else{
-                document.getElementById("CaptainFaceman").bgColor = "red";
-                document.getElementById("CaptainFaceman").innerHTML = "Away";
+                document.getElementById("CaptainF").bgColor = "red";
+                document.getElementById("CaptainF").innerHTML = "Away";
             }
         });
         requestURL = "https://api.spark.io/v1/devices/" + deviceID + "/Jorge/?access_token=" + accessToken;
