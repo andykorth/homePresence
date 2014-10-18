@@ -137,6 +137,7 @@ void setup()
 	// Configure the pins to be outputs
 	pinMode(LED_1, OUTPUT);
 	pinMode(LED_2, OUTPUT);
+	pinMode(D7, OUTPUT);
 	
 	// Initialize both the LEDs to be OFF
 	digitalWrite(LED_1, LOW);
@@ -188,24 +189,31 @@ void loop()
 		debounce = true;
 	}
 	
-	if(currentNote != -1){
+	/*
+	 if(currentNote != -1){
+	 
+	 char* str = "note: x";
+	 str[6] = currentNote;
+	 Welcome(str);
+	 
 		// to calculate the note duration, take one second
 		// divided by the note type.
 		//e.g. quarter note = 1000 / 4, eighth note = 1000/8, etc.
 		int noteDuration = 1000/noteDurations[currentNote];
-		tone(8, melody[currentNote],noteDuration);
+		tone(D7, melody[currentNote],noteDuration);
 		
 		// to distinguish the notes, set a minimum time between them.
 		// the note's duration + 30% seems to work well:
 		int pauseBetweenNotes = noteDuration * 1.30;
 		delay(pauseBetweenNotes);
 		// stop the tone playing:
-		noTone(8);
+		noTone(D7);
 		currentNote = (currentNote+1);
 		if(currentNote > 8){
-			currentNote = -1;
+	 currentNote = -1;
 		}
-	}
+	 }
+	 */
 	
 	// Nothing to do here
 }
@@ -236,7 +244,7 @@ int ledControl(String command)
 		Welcome("Green LED");
 	}
 	
-
+	
 	
 	// find out the state of the led
 	if(command.substring(3,7) == "HIGH") state = 1;
