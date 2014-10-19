@@ -15,7 +15,7 @@
     <button id="GreenOff"  onclick="led('l2', 'LOW')">Green Off</button>
     <button id="ResetCounter" onclick="resetCounter()">Reset Counter</button>
     <br><br>
-    <P><font color="white">Current State Change Count: <span id="stateChanges">No connection yet. Check yer wifi</span></font><br>
+    <P><font color="white">Are your children safe? Can you be sure???</span></font><br>
 
     <table cellspacing="0" align="center">
         <tr>
@@ -44,13 +44,17 @@
             <td id="BabyBertha" align="center" bgcolor="beige">Unknown</td>
             </tr>
     </table>
+
+    <P><font color="white">Last connection: <span id="lastTime">NEVER</span></font><br>
+
+
     <script type="text/javascript">
       var deviceID    = "53ff6e066667574848470967";
       var accessToken = "01c5f7b2d98633a65068351fd2a830c083c144cc";
       var setFunc = "led";
       var getFunc = "count";
 
-      window.setInterval(updateStateChanges, 5000);
+      window.setInterval(updateStateChanges, 2000);
       
     function led(light, state) {
         sparkSetLedState(light, state);
@@ -62,7 +66,6 @@
         $.post( requestURL, {access_token: accessToken });
         
     }
-    
     function changeMan(personName, people, personIndex){
 		if(people & (1 << personIndex)){
 			document.getElementById(personName).bgColor = "green";
@@ -84,6 +87,8 @@
             changeMan("TheStickler", people, 2);
             changeMan("Cardla", people, 3);
             changeMan("BabyBertha", people, 4);
+            
+			document.getElementById("lastTime").innerHTML = json.coreInfo.last_heard;
         });
 
     }
